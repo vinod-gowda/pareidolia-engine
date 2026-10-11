@@ -54,5 +54,7 @@ START
 chmod +x $W/start.sh
 step "starting API on :3000"
 bash $W/start.sh
+# keep the engine alive: it once died silently after an hour of switching models
+( while true; do sleep 20; pgrep -f 'launch.py' >/dev/null || { echo "$(date +%H:%M:%S) engine was down - restarting" >> $W/watch.log; bash $W/start.sh >/dev/null 2>&1; sleep 60; }; done ) &
 echo "BOOTSTRAP-FINISHED exit=0"
 sleep infinity
